@@ -1,0 +1,14 @@
+{
+  "lolapi": {
+    "baseUrl": "https://br1.api.riotgames.com/lol",
+    "keys": ["xxxx", "yyyy"],
+    "requestsPerKey": 50,
+    "throttling": {
+      "requests": 3,
+      "every": 2000
+    },
+    "requestAdditionalOptions": {
+      "proxy": "http://localhost:5865"
+    }
+  }
+}

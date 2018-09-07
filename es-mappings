@@ -1,0 +1,20 @@
+PUT leagues
+{
+  "mappings": {
+    "league": {
+      "properties": {
+        "leagueId" : {
+          "type": "keyword"
+        },
+        "entries": {
+          "type": "nested" 
+        }
+      }
+    }
+  },
+  "settings": {
+    "index": {
+      "max_inner_result_window": 200
+    }
+  }
+}

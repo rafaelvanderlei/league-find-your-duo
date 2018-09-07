@@ -1,0 +1,6 @@
+{
+    "extends": "standard",
+    "rules": {
+        "keyword-spacing": ["error", { "overrides": { "if": { "after": false } } }]
+    }
+}

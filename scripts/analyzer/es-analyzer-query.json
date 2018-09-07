@@ -1,0 +1,41 @@
+{
+  "_source": {
+    "excludes": [ "entries" ]
+  },
+  "query": {
+    "bool": {
+      "must": [
+        { 
+          "term": {
+            "leagueId": "b157c0f0-2d97-11e8-9f6a-d4ae528a4d2b"
+          }
+        },
+        {
+          "nested": {
+            "path": "entries",
+            "query": {
+              "bool": {
+                "must": [
+                  { "range" : {"entries.rank" : {"lte" : 2}} },
+                  { "range" : {"entries.leaguePoints": {"gt" : 50}} },
+                  { "match" : {"entries.inactive" : false } },
+                  {
+                      "script" : {
+                          "script" : {
+                              "source": "doc['entries.wins'].value > doc['entries.losses'].value",
+                              "lang": "painless"
+                          }
+                      }
+                  }
+                ]
+              }
+            },
+            "inner_hits": {
+              "size": 200
+            }
+          }
+        }
+      ]
+    }
+  }
+}
