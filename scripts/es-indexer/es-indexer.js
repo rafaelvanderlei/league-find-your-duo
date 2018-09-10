@@ -1,9 +1,9 @@
-import { readFile, writeFile } from 'fs-extra'
+import { writeFile } from 'fs-extra'
 import { Client } from 'elasticsearch'
 
 import args from '../../lib/args'
-import dataIndexFile from '../../lib/dataIndexFile';
-import config from '../../config/config';
+import dataIndexFile from '../../lib/dataIndexFile'
+import config from '../../config/config'
 
 var client = new Client({
   host: 'localhost:9200',
@@ -103,28 +103,28 @@ const indexMasteries = () => {
 
 const indexMatches = summonerId => {
   return dataIndexFile.getChampions()
-  .then(champions => {
-    return dataIndexFile.getSummonerMatches(summonerId)
-      .then(matches => {
-        const indexedMatches = {
-          summonerId,
-          matches: matches.matches
-            .filter(match => config.esindexer.matches.queues.includes(match.queue))
-            .map(match => ({
-              ...match,
-              championName: champions.data[match.champion].name
-            }))
-        }
-        client.index({
-          index: 'matches',
-          type: 'match',
-          id: summonerId,
-          body: indexedMatches
-        })
+    .then(champions => {
+      return dataIndexFile.getSummonerMatches(summonerId)
+        .then(matches => {
+          const indexedMatches = {
+            summonerId,
+            matches: matches.matches
+              .filter(match => config.esindexer.matches.queues.includes(match.queue))
+              .map(match => ({
+                ...match,
+                championName: champions.data[match.champion].name
+              }))
+          }
+          client.index({
+            index: 'matches',
+            type: 'match',
+            id: summonerId,
+            body: indexedMatches
+          })
 
-        return indexedMatches
-      })
-  })
+          return indexedMatches
+        })
+    })
 }
 
 if(args.index === 'summoner') {

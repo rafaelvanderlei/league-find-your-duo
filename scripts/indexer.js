@@ -21,20 +21,20 @@ const soloDuoLeagueP = leaguePositionsP.then(leagues => {
   }
 })
 
-if(!args.skipMasteries) {
-  soloDuoLeagueP.then(league => {
-    league.entries
-      .filter(e => !dataIndexerFile.existsMasteriesBySummoner(e.playerOrTeamId))
-      .forEach(e => {
-        console.log(new Date(), 'masteries request', e.playerOrTeamId)
-        lolapi.getMasteries(e.playerOrTeamId)
-          .then(masteries => {
-            console.log(new Date(), 'masteries result', e.playerOrTeamId, masteries && masteries.length)
-            dataIndexerFile.indexMasteriesBySummoner(e.playerOrTeamId, masteries || [])
-          })
-      })
-  })
-}
+// if(!args.skipMasteries) {
+//   soloDuoLeagueP.then(league => {
+//     league.entries
+//       .filter(e => !dataIndexerFile.existsMasteriesBySummoner(e.playerOrTeamId))
+//       .forEach(e => {
+//         console.log(new Date(), 'masteries request', e.playerOrTeamId)
+//         lolapi.getMasteries(e.playerOrTeamId)
+//           .then(masteries => {
+//             console.log(new Date(), 'masteries result', e.playerOrTeamId, masteries && masteries.length)
+//             dataIndexerFile.indexMasteriesBySummoner(e.playerOrTeamId, masteries || [])
+//           })
+//       })
+//   })
+// }
 
 Promise.all([summonerP, leaguePositionsP, soloDuoLeagueP, matchesP])
   .then(values => {

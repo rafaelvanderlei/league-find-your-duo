@@ -7,6 +7,7 @@
     "setup": "babel-node scripts/setup/setup.js",
     "analyzer": "babel-node scripts/analyzer/es-analyzer.js",
     "indexer": "babel-node scripts/indexer.js",
+    "summoners-indexer": "babel-node scripts/file-indexer/summoners-indexer.js",
     "matches-indexer": "babel-node scripts/file-indexer/matches-indexer.js",
     "es-indexer": "babel-node scripts/es-indexer/es-indexer.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -25,6 +26,7 @@
     "limiter": "^1.1.3",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
+    "moment": "^2.22.2",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "tunnel": "0.0.5"
