@@ -1,14 +1,26 @@
 import { readFile } from 'fs-extra'
 import { Client } from 'elasticsearch'
 import bodybuilder from 'bodybuilder'
-
-// const leagueId = 'a873cbc0-9073-11e8-b334-d4ae5289a399'
-// const leagueId = '99e4ea70-fc7c-11e7-a6b5-d4ae5289a399'
+import parseTemplate from 'json-templates'
+import args from '../../lib/args'
+import clipboardy from 'clipboardy'
 
 var client = new Client({
   host: 'localhost:9200',
   log: 'info'
 })
+
+const searchSummonerByName = summonerName => {
+  const builder = bodybuilder()
+    .query('term', 'name.keyword', summonerName)
+  
+  const body = builder.build()
+  return client.search({
+    index: 'summoners',
+    body
+  })
+    .then(result => result.hits.hits[0]._source)
+}
 
 const searchMasteries = criteria => {
   const builder = bodybuilder()
@@ -37,11 +49,20 @@ const champs = {
   adc: ['Jhin', 'Kai\'Sa', 'Ezreal', 'Lucian', 'Jinx', 'Draven', 'Miss Fortune', 'Twitch', 'Sivir', 'Varus', 'Tristana', 'Caitlyn', 'Xayah', 'Vayne', 'Ashe', 'Kalista']
 }
 
-const championsFilter = champs.support
-// const championsFilter = adcChampions
+// const championsFilter = champs.support
+const championsFilter = champs.adc
 
 readFile('scripts/analyzer/es-analyzer-query.json')
   .then(file => JSON.parse(file))
+  .then(query => {
+    return searchSummonerByName(args.summonerName)
+      .then(summoner => {
+        const queryTemplate = parseTemplate(query)
+        return queryTemplate({
+          leagueId: summoner.soloDuoLeagueId
+        })
+      })
+  })
   .then(query => {
     return client.search({
       index: 'leagues',
@@ -56,8 +77,18 @@ readFile('scripts/analyzer/es-analyzer-query.json')
   .then(masteriesP => {
     Promise.all(masteriesP)
       .then(masteries => {
+        console.log('masteries', masteries.length)
         masteries
+        // .filter(mastery => mastery.masteries.length > 0)
+        .forEach(mastery => console.log(mastery.playerOrTeamName + '[' + mastery.playerOrTeamId + ']', mastery.masteries.map(m => m.championName + '[' + m.position + ']')))
+        return masteries
+      })
+      .then(masteries => {
+        const summoners = masteries
           .filter(mastery => mastery.masteries.length > 0)
-          .forEach(mastery => console.log(mastery.playerOrTeamName + '[' + mastery.playerOrTeamId + ']', mastery.masteries.map(m => m.championName + '[' + m.position + ']')))
+          .map(m => m.playerOrTeamName)
+          .join(',')
+        console.log(summoners)
+        clipboardy.writeSync(summoners)
       })
   })

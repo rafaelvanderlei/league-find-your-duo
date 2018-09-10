@@ -7,7 +7,7 @@
       "must": [
         { 
           "term": {
-            "leagueId": "b157c0f0-2d97-11e8-9f6a-d4ae528a4d2b"
+            "leagueId": "{{leagueId}}"
           }
         },
         {

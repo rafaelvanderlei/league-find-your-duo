@@ -8,7 +8,9 @@ export const paths = {
   config: basePath + 'config/',
   data: basePath + 'data/',
   static: basePath + 'data/static/',
+  indexedChampions: basePath + 'data/static/champions.json',
   indexedSummoners: basePath + 'data/indexed/summoners/',
+  indexedMatchesBySummoner: basePath + 'data/indexed/matches/by-summoner/',
   indexedMasteriesBySummoner: basePath + 'data/indexed/champions-masteries/by-summoner/',
   indexedLeaguesById: basePath + 'data/indexed/leagues/by-id/',
   indexedLeaguesPositions: basePath + 'data/indexed/leagues/positions/'
@@ -24,5 +26,5 @@ const externalConfig = (() => {
 
 export default {
   paths,
-  lolapi: externalConfig.lolapi
+  ...externalConfig
 }
